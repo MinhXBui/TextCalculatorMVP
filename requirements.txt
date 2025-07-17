@@ -1,0 +1,11 @@
+scikit-learn
+google-genai
+asynciolimiter
+langchain 
+langchain_google_genai
+streamlit
+pyngrok
+python-dotenv
+tqdm
+numpy
+pandas
