@@ -31,7 +31,8 @@ client = genai.Client(api_key = st.secrets["GOOGLE_API_KEY"])
 os.environ["GOOGLE_API_KEY"] = st.secrets["GOOGLE_API_KEY"]
 
 st.set_page_config(layout="wide")
-st.title("""Summarize text like numbers with ⛏️ 10ft Deep Insights """)
+st.logo("Logo.png")
+st.title("""Summarize text like numbers with the Text Calculator 🧮""")
 st.divider()
 uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
 
