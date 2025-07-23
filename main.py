@@ -36,7 +36,7 @@ streamlit_analytics.track(unsafe_password=st.secrets["Analytic_password"])
 st.set_page_config(layout="wide")
 st.logo("Logo.png")
 st.title("Analyze qualitative data just like numbers with the Text Calculator.")
-st.video("https://drive.google.com/file/d/16s62NuYAIJrBt3OUjvqBV7tQeMrCwoar/view?usp=sharing", width=850)
+st.video("https://youtu.be/mnsWgRswgv0", width=850)
 st.divider()
 # --------- Collecting User Gmail For futher auth ---------
 streamlit_analytics.start_tracking()
