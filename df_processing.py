@@ -48,9 +48,9 @@ def pivot_table_result (text_merge_df, row_vals_list, col_vals_list, text_field_
 #print("check dependancy df processing")
 
 def countdown_clock(duration):
-    st.write("Result Countdown:")
+    st.write("Data Processing Countdown:")
     countdown_placeholder = st.empty()
     for i in range(duration, -1, -1):
-        countdown_placeholder.markdown(f"#### Time remaining: {i} seconds")
+        countdown_placeholder.markdown(f"#### Estimate Time remaining: {i} seconds")
         time.sleep(1)
-    countdown_placeholder.write("Result collected! 🎉")
+    countdown_placeholder.write("Collecting Results")
