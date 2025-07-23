@@ -95,7 +95,7 @@ if uploaded_file is not None:
         brevity_setting_list = ["Very brief", "Concise", "Standard", "Detailed", "Extensive"]
         #output_type = ["Simple text merge", "Sentiment Anlysis", "LLM Output"]
         text_field_val_list = st.multiselect("Select text columns to analyze:", columns_list)
-        llm_brevity_setting = st.selectbox("Select the results length:", brevity_setting_list)
+        llm_brevity_setting = st.selectbox("Select the each pivot cell results length:", brevity_setting_list)
         token_output_dict = {"Very brief":15,"Concise":50,"Standard":140,"Detailed":350,"Extensive":700}
         local_model_configs = llm_api_async.model_configs
         local_model_configs["max_output_tokens"] = token_output_dict[llm_brevity_setting]
