@@ -9,3 +9,4 @@ python-dotenv
 tqdm
 numpy
 pandas
+streamlit_analytics2
