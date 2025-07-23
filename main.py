@@ -37,6 +37,7 @@ st.set_page_config(layout="wide")
 st.logo("Logo.png")
 st.title("Analyze qualitative data just like numbers with the Text Calculator.")
 st.video("https://youtu.be/mnsWgRswgv0", width=850)
+st.write("Quick tutorial by me: xmb4002@gmail.com")
 st.divider()
 # --------- Collecting User Gmail For futher auth ---------
 streamlit_analytics.start_tracking()
