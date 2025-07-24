@@ -36,16 +36,17 @@ streamlit_analytics.track(unsafe_password=st.secrets["Analytic_password"])
 st.set_page_config(layout="wide")
 st.logo("Logo.png")
 st.title("Analyze qualitative data just like numbers with the Text Calculator.")
-st.video("https://youtu.be/mnsWgRswgv0", width=850)
-st.write("Quick tutorial by me: xmb4002@gmail.com")
+#st.video("https://youtu.be/mnsWgRswgv0", width=850)
+#st.write("Quick tutorial by me: xmb4002@gmail.com")
 st.divider()
 # --------- Collecting User Gmail For futher auth ---------
 streamlit_analytics.start_tracking()
 
-user_signup_email = st.text_input("Please enter your gmail to access the software", placeholder="your.email@gmail.com")
-email_is_valid = False
+# - user_signup_email = st.text_input("Please enter your gmail to access the software", placeholder="your.email@gmail.com")
+"""email_is_valid = False"""
 # This is key to prevent the loop of session action reset cause declare as variable will get run again
 # Using the if statement prevented it!
+"""
 if "user_logged_in" not in st.session_state: 
     st.session_state["user_logged_in"] = False
     st.session_state["logged_in_email"] = "None"
@@ -69,7 +70,7 @@ st.divider()
 if not st.session_state.get("user_logged_in", False):
     st.error("You need to sign in to access this content.")
     st.stop()
-
+"""
 # --------- User Uploading files & previews data ---------
 st.subheader("Upload your CSV file here")
 uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
