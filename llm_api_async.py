@@ -39,7 +39,7 @@ async def multiple_llm_api_request_with_limit (batch_request_list, model_configs
   return api_result_list
 
 system_prompt = """You are an expert RAG agent focusing on Q&A with a question with provided context in the format of Question: (question asked), Context (context provided).
-Focus on response to the question do not add any commentary. If the context provided is not relevant simply return: No relevant context found"""
+Focus on the response to the question; do not add any commentary. Be direct and to the point, and avoid duplicate information in response. If the context provided is not relevant, simply return: No relevant context found."
 
 model_configs = {"temperature": 0.0, "max_output_tokens": 120, "thinking_budget": 0}
 
