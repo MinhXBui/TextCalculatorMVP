@@ -39,38 +39,8 @@ st.title("Analyze qualitative data just like numbers with the Text Calculator.")
 #st.video("https://youtu.be/mnsWgRswgv0", width=850)
 #st.write("Quick tutorial by me: xmb4002@gmail.com")
 st.divider()
-# --------- Collecting User Gmail For futher auth ---------
 streamlit_analytics.start_tracking()
 
-# - user_signup_email = st.text_input("Please enter your gmail to access the software", placeholder="your.email@gmail.com")
-"""email_is_valid = False"""
-# This is key to prevent the loop of session action reset cause declare as variable will get run again
-# Using the if statement prevented it!
-"""
-if "user_logged_in" not in st.session_state: 
-    st.session_state["user_logged_in"] = False
-    st.session_state["logged_in_email"] = "None"
-
-if user_signup_email != "":
-    email_regex = r'^[a-zA-Z0-9._%+-]+@gmail\.com$'
-    if (re.fullmatch(email_regex, user_signup_email)):
-        email_is_valid = True
-        if st.session_state["user_logged_in"] and st.session_state.get("logged_in_email") == user_signup_email:
-            st.success(f"You already logged in for the session as: {user_signup_email}")
-        else:
-            if st.button("User Session Login In"):
-                st.session_state["user_logged_in"] = True
-                st.session_state["logged_in_email"] = user_signup_email
-                st.success(f"Login as google email: {user_signup_email}")
-    else:
-        st.write(f"Invalid google email, please try again: {user_signup_email}")
-
-st.divider()
-
-if not st.session_state.get("user_logged_in", False):
-    st.error("You need to sign in to access this content.")
-    st.stop()
-"""
 # --------- User Uploading files & previews data ---------
 st.subheader("Upload your CSV file here")
 uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
@@ -158,4 +128,3 @@ st.divider()
 st.markdown("#### Contact Information")
 st.write("If you have feedback, ideas, or just want to share how you used it, I’d really appreciate it.")
 st.write("Email: xmb4002@gmail.com")
-st.write("Linkedin: https://www.linkedin.com/in/buixuanminh/")
