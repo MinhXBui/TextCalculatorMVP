@@ -5,6 +5,12 @@ import json
 import tqdm
 from tqdm import tqdm
 import pandas as pd
+from pandas.api.types import (
+    is_categorical_dtype,
+    is_datetime64_any_dtype,
+    is_numeric_dtype,
+    is_object_dtype,
+)
 
 # For Emdedding & LLM async data summerization 
 import os
@@ -21,7 +27,7 @@ import subprocess
 import streamlit as st
 import streamlit_analytics2 as streamlit_analytics
 import re
-
+import streamlit.components.v1 as components
 # For own code process & libraries
 import df_processing
 import embedding
@@ -31,42 +37,47 @@ import llm_api_async
 #GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"]
 client = genai.Client(api_key = st.secrets["GOOGLE_API_KEY"])
 os.environ["GOOGLE_API_KEY"] = st.secrets["GOOGLE_API_KEY"]
-streamlit_analytics.track(unsafe_password=st.secrets["Analytic_password"])
+#streamlit_analytics.track(unsafe_password=st.secrets["Analytic_password"])
 
 st.set_page_config(layout="wide")
+pd.set_option('display.max_colwidth', None)
 st.logo("Logo.png")
 st.title("Analyze qualitative data just like numbers with the Text Calculator.")
-#st.video("https://youtu.be/mnsWgRswgv0", width=850)
-#st.write("Quick tutorial by me: xmb4002@gmail.com")
 st.divider()
-streamlit_analytics.start_tracking()
+#streamlit_analytics.start_tracking()
 
 # --------- User Uploading files & previews data ---------
 st.subheader("Upload your CSV file here")
 uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
 
 if uploaded_file is not None:
-    df = pd.read_csv(uploaded_file)
-    columns_list = list(df.columns)
-
+    orginal_df = pd.read_csv(uploaded_file)
     st.write("File successfully uploaded")
-    st.subheader("Data Preview")
-    st.write(df.head(3))
-    st.markdown("---")
-    st.subheader("Analyzing your data: ...")
+
+    st.divider()
+    st.markdown("### Click here to filter data:")
+    df = df_processing.filtering_dataframe(orginal_df)
+    
+    st.markdown("##### Data Preview")
+    st.dataframe(df, column_config={"Text Column": st.column_config.TextColumn("Full Text Display",width="small")})
+
+    st.divider()
+    st.markdown("### Analyzing your data: ...")
+    df = df_processing.globalize_localize_column(df)
+    columns_list = list(df.columns)
 
 # --------- User selecting columns for pivot table format ---------
     data_filter_section, process_setting_section = st.columns([1,1])
     with data_filter_section:
         st.write("Settings for pivot table: (Do not select duplicated cols)")
-        row_vals_list = st.multiselect("Select pivot table rows:", columns_list)
-        col_vals_list = st.multiselect("Select pivot table columns:", columns_list)
+        row_vals_list = st.multiselect("Select pivot table rows:", columns_list, key="row_vals_list")
+        col_vals_list = st.multiselect("Select pivot table columns:", columns_list, key="col_vals_list")
 
     with process_setting_section:
         st.write("Additional output adjustment:")
         brevity_setting_list = ["Very brief", "Concise", "Standard", "Detailed", "Extensive"]
         #output_type = ["Simple text merge", "Sentiment Anlysis", "LLM Output"]
-        text_field_val_list = st.multiselect("Select text columns to analyze:", columns_list)
+        text_field_val_list = st.multiselect("Select text columns to analyze:", columns_list, key="text_field_val_list")
         llm_brevity_setting = st.selectbox("Select the each pivot cell results length:", brevity_setting_list)
         token_output_dict = {"Very brief":15,"Concise":50,"Standard":140,"Detailed":350,"Extensive":700}
         local_model_configs = llm_api_async.model_configs
@@ -76,14 +87,33 @@ if uploaded_file is not None:
 
     user_question = st.text_input("Questions to summarize text data:")
     st.write(f"User Query Confirmation: {user_question}")
-    run_analysis_button = st.button("Run Analysis")
+    st.divider()
+    sample_analysis_field, actual_analysis_field = st.columns([1,1])
+    with sample_analysis_field:
+        st.write("Run quick sample out your query results (may differ from actual).")
+        run_sample_analysis_button = st.button("Sample Analysis")
+    with actual_analysis_field:
+        st.write("Full analysis, recommend to after experimenting with sample analysis.")
+        run_analysis_button = st.button("Run Analysis")
 
-    if run_analysis_button and user_question != "":
-        
+# --------- Segmenting wether it's sample or actual analysis for user experimenation ---------
+    query_execute_status = False
+    if run_sample_analysis_button == True:
+        number_sample = n = max(int(round(0.1 * len(df))),1)
+        df_for_analysis = df.sample(n=number_sample)
+        run_analysis_button = False
+        query_execute_status = True
+    if run_analysis_button == True:
+        df_for_analysis = df.copy()
+        run_sample_analysis_button = False
+        query_execute_status = True
+
+# --------- Data processing & text merging for LLM API Async result ---------
+    if query_execute_status and user_question != "":
         # Dataframe group by
-        group_by_table = df_processing.create_groupby_table(df, list(row_vals_list), list(col_vals_list), list(text_field_val_list))
+        group_by_table = df_processing.create_groupby_table(df_for_analysis, list(row_vals_list), list(col_vals_list), list(text_field_val_list))
         group_by_table_result = df_processing.pivot_table_result(group_by_table,list(row_vals_list), list(col_vals_list), list(text_field_val_list)).fillna("") # Turn groupbuy count into pivot format
-        text_merged_table = df_processing.text_merge_df (df, group_by_table, list(row_vals_list), list(col_vals_list), list(text_field_val_list)) 
+        text_merged_table = df_processing.text_merge_df (df_for_analysis, group_by_table, list(row_vals_list), list(col_vals_list), list(text_field_val_list)) 
         
         # Assume Nan get exclude in groupby_table --> Direct number of APIs calls
         api_current_limit_per_minute = 3900 # 4000 is the actual limit but too tight
@@ -121,7 +151,7 @@ if uploaded_file is not None:
             st.header("Query Result 4 Download")
             st.write(result_pivoted_table)
 
-streamlit_analytics.stop_tracking()
+#streamlit_analytics.stop_tracking()
 
 # --------- Contact Information ---------
 st.divider()

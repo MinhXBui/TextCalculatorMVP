@@ -1,6 +1,12 @@
 import pandas as pd
 import streamlit as st
 import time
+from pandas.api.types import (
+    is_categorical_dtype,
+    is_datetime64_any_dtype,
+    is_numeric_dtype,
+    is_object_dtype,
+)
 
 def create_groupby_table (dataframe, row_vals_list, col_vals_list, text_field_val_list):
   groupby_list = row_vals_list + col_vals_list
@@ -54,3 +60,77 @@ def countdown_clock(duration):
         countdown_placeholder.markdown(f"#### Estimate Time remaining: {i} seconds")
         time.sleep(1)
     countdown_placeholder.write("Collecting Results")
+
+def filtering_dataframe(df: pd.DataFrame) -> pd.DataFrame:
+  modify_check_box = st.checkbox("Add Filters")
+  if modify_check_box == False:
+    return df
+  
+  # To isolate actual df and df use for analysis
+  df_copied = df.copy()
+  # Try to convert datetimes into standard format (datetime: no timezone)
+  for each_column in df_copied.columns:
+    if is_object_dtype(df_copied[each_column]):
+      try:
+        df_copied[each_column] = pd.to_datetime(df_copied[each_column])
+      except Exception:
+        pass
+    
+    if is_datetime64_any_dtype(df_copied[each_column]):
+      df_copied[each_column] = df[each_column].dt.tz_localize(None)
+    
+    modification_container = st.container()
+
+    # Create a object container including both selecting to filter & filtering parts
+    # Wrong indentation
+  with modification_container:
+    selected_cols_to_filter = st.multiselect("Filter dataset on:", list(df_copied.columns))
+    for each_col_to_filter in selected_cols_to_filter:
+      left, right = st.columns((1,20))
+      
+      if is_categorical_dtype(df_copied[each_col_to_filter]) or df_copied[each_col_to_filter].nunique() <10:
+        user_category_input  = right.multiselect(f"Values for: {each_col_to_filter}", 
+                                                  df_copied[each_col_to_filter].unique(),
+                                                  default=list(df_copied[each_col_to_filter].unique()))
+        df_cat_filter = df_copied[each_col_to_filter].isin(user_category_input)
+        df_copied = df_copied[df_cat_filter]
+      
+      elif is_numeric_dtype(df_copied[each_col_to_filter]):
+        min_val = float(df_copied[each_col_to_filter].min())
+        max_val = float(df_copied[each_col_to_filter].max())
+        step = (max_val - min_val) / 100
+        user_numerical_input = right.slider(f"Values for: {each_col_to_filter}", min_value = min_val, max_value = max_val, step = step)
+        df_numerical_filter = df_copied[each_col_to_filter].between(*user_numerical_input)
+        df_copied = df_copied[df_numerical_filter]
+
+      elif is_datetime64_any_dtype(df_copied[each_col_to_filter]):
+        user_date_input = right.date_input(f"Values for {each_col_to_filter}", 
+                                            value=(df_copied[each_col_to_filter].min(), df_copied[each_col_to_filter].max()))
+        if len(user_date_input) == 2:
+          user_date_input = tuple(map(pd.to_datetime, user_date_input))
+          start_date, end_date = user_date_input
+          df_date_filter = df_copied[each_col_to_filter].between(start_date, end_date)
+          df_copied = df_copied[df_date_filter]
+      
+      else:
+        user_text_input = right.text_input(f"Substring or regex in {each_col_to_filter}")
+        if user_text_input == True:
+          df_text_filter = df_copied[each_col_to_filter].astype(str).str.conatins(user_text_input)
+          df_copied = df_copied[df_text_filter]
+        
+  return df_copied
+
+def globalize_localize_column (df: pd.DataFrame) -> pd.DataFrame:
+  localize_index = list(range(0,len(df)))
+  globalize_index = ["global"] * len(df)
+  df["localize"] = localize_index
+  df["globalize"] = globalize_index
+  return df
+
+
+
+
+
+
+
+
