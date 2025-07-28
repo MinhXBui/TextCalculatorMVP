@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import streamlit as st
 import time
 from pandas.api.types import (
@@ -7,6 +8,7 @@ from pandas.api.types import (
     is_numeric_dtype,
     is_object_dtype,
 )
+import ast
 
 def create_groupby_table (dataframe, row_vals_list, col_vals_list, text_field_val_list):
   groupby_list = row_vals_list + col_vals_list
@@ -61,6 +63,18 @@ def countdown_clock(duration):
         time.sleep(1)
     countdown_placeholder.write("Collecting Results")
 
+def func_or_filter_list (Combined_filter_list:list) -> list:
+  List_combined = np.array(Combined_filter_list).astype(int)
+  Index_range_length = len(List_combined[0:1,].tolist()[0])
+  filter_list = []
+  for each_row_index in range(0,Index_range_length):
+    check_or_filter = List_combined[:,each_row_index].sum()
+    if check_or_filter > 0:
+      filter_list.append(True) 
+    else:
+      filter_list.append(False)
+  return filter_list
+
 def filtering_dataframe(df: pd.DataFrame) -> pd.DataFrame:
   modify_check_box = st.checkbox("Add Filters")
   if modify_check_box == False:
@@ -111,12 +125,35 @@ def filtering_dataframe(df: pd.DataFrame) -> pd.DataFrame:
           start_date, end_date = user_date_input
           df_date_filter = df_copied[each_col_to_filter].between(start_date, end_date)
           df_copied = df_copied[df_date_filter]
-      
+      # Next update text filter with and + or methods
       else:
-        user_text_input = right.text_input(f"Substring or regex in {each_col_to_filter}")
-        if user_text_input == True:
-          df_text_filter = df_copied[each_col_to_filter].astype(str).str.contains(user_text_input)
-          df_copied = df_copied[df_text_filter]
+        and_filter_checkbox, or_filter_checkbox = st.columns([1,1])
+        with and_filter_checkbox:
+          select_and_filter = st.checkbox("Add Filters", key="select_and_filter")
+        with or_filter_checkbox:
+          select_or_filter = st.checkbox("Or Filters", key="select_or_filter")
+
+        st.write('Filter substring in the following format: "word1", "word2", "word3" and select either filter by "And" or "Or".')
+        user_text_input = right.text_input(f"Substring check {each_col_to_filter}",)
+        if user_text_input != "":
+          text_list_formated = f"[{user_text_input}]"
+          try:
+            substring_filter_list = ast.literal_eval(text_list_formated)
+            if select_and_filter == True:
+              for each_sub_string in substring_filter_list:
+                df_text_filter = df_copied[each_col_to_filter].astype(str).str.contains(each_sub_string)
+                df_copied = df_copied[df_text_filter]
+
+            elif select_or_filter == True:
+              combined_or_filter_list = []
+              for each_sub_string in substring_filter_list:
+                df_text_filter = df_copied[each_col_to_filter].astype(str).str.contains(each_sub_string)
+                combined_or_filter_list.append(list(df_text_filter))
+              final_or_filter = func_or_filter_list(combined_or_filter_list)
+              df_copied = df_copied[final_or_filter]
+          except KeyError:
+            st.write(text_list_formated)
+            st.write(KeyError)
         
   return df_copied
 
@@ -126,9 +163,6 @@ def globalize_localize_column (df: pd.DataFrame) -> pd.DataFrame:
   df["localize"] = localize_index
   df["globalize"] = globalize_index
   return df
-
-
-
 
 
 
