@@ -115,7 +115,7 @@ def filtering_dataframe(df: pd.DataFrame) -> pd.DataFrame:
       else:
         user_text_input = right.text_input(f"Substring or regex in {each_col_to_filter}")
         if user_text_input == True:
-          df_text_filter = df_copied[each_col_to_filter].astype(str).str.conatins(user_text_input)
+          df_text_filter = df_copied[each_col_to_filter].astype(str).str.contains(user_text_input)
           df_copied = df_copied[df_text_filter]
         
   return df_copied
