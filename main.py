@@ -28,6 +28,8 @@ import streamlit as st
 import streamlit_analytics2 as streamlit_analytics
 import re
 import streamlit.components.v1 as components
+import ast
+
 # For own code process & libraries
 import df_processing
 import embedding
@@ -132,8 +134,16 @@ if uploaded_file is not None:
             for each_selected_col in text_field_val_list:
                 text_list_per_row = list(text_merged_table[each_selected_col])
                 batch_request_list = llm_api_async.batch_prompt_processing(llm_api_async.system_prompt, user_question, context_list=text_list_per_row)
-                results = asyncio.run(llm_api_async.multiple_llm_api_request_with_limit(batch_request_list, local_model_configs, api_limiter))
+                llm_api_results = asyncio.run(llm_api_async.multiple_llm_api_request_with_limit(batch_request_list, local_model_configs, api_limiter))
+                sorted_llm_api_results = llm_api_async.sorted_multiple_llm_api_result(llm_api_results)
+
+                results = sorted_llm_api_results["results"]
+                input_tokens = sorted_llm_api_results["input_tokens"]
+                output_tokens = sorted_llm_api_results["output_tokens"]
+
                 new_groupby_table[f"{each_selected_col}_result"] = list(results)
+                new_groupby_table[f"{each_selected_col}_input_tokens"] = list(input_tokens)
+                new_groupby_table[f"{each_selected_col}_output_tokens"] = list(output_tokens)
                 new_text_col_list.append(f"{each_selected_col}_result")
                 
             result_pivoted_table = df_processing.pivot_table_result(new_groupby_table, row_vals_list, col_vals_list, new_text_col_list)
@@ -145,7 +155,7 @@ if uploaded_file is not None:
 
         with raw_data_tab:
             st.header("Query result with merged text context for validation.")
-            st.write(text_merged_table)
+            st.write(new_groupby_table) #text_merged_table
 
         with result_data_to_download:
             st.header("Query Result 4 Download")
@@ -158,3 +168,8 @@ st.divider()
 st.markdown("#### Contact Information")
 st.write("If you have feedback, ideas, or just want to share how you used it, I’d really appreciate it.")
 st.write("Email: xmb4002@gmail.com")
+
+# To do list:
+    # Semantic search & filter
+    # Metadata index traceback (simple as semantic filter handle relevant info)
+    # Sentiment analysis instead of LLM
