@@ -45,7 +45,7 @@ st.set_page_config(layout="wide")
 pd.set_option('display.max_colwidth', None)
 st.logo("Logo.png")
 st.title("Analyze qualitative data just like numbers with the Text Calculator.")
-st.video("https://youtu.be/iJKgxyn8RPU", width = 400)
+st.video("https://youtu.be/iJKgxyn8RPU", width = 650)
 st.divider()
 #streamlit_analytics.start_tracking()
 
