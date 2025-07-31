@@ -105,10 +105,12 @@ if uploaded_file is not None:
         df_for_analysis = df.sample(n=number_sample)
         run_analysis_button = False
         query_execute_status = True
+        countdown_timer_adjust = 1
     if run_analysis_button == True:
         df_for_analysis = df.copy()
         run_sample_analysis_button = False
         query_execute_status = True
+        countdown_timer_adjust = 5
 
 # --------- Data processing & text merging for LLM API Async result ---------
     if query_execute_status and user_question != "":
@@ -128,7 +130,7 @@ if uploaded_file is not None:
             st.header("User question result")
             new_groupby_table = group_by_table
 
-            estimate_count_down_time = int(round(len(text_merged_table) * (60 / api_current_limit_per_minute) + 4,0))
+            estimate_count_down_time = int(round(len(text_merged_table) * (60 / api_current_limit_per_minute) + countdown_timer_adjust,0))
             df_processing.countdown_clock(estimate_count_down_time)
             new_text_col_list = []
             for each_selected_col in text_field_val_list:
