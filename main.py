@@ -51,7 +51,7 @@ st.divider()
 
 # --------- User Uploading files & previews data ---------
 st.subheader("Upload your CSV file here.")
-uploaded_file = st.file_uploader("Choose a CSV file, row limit at 5000.", type="csv")
+uploaded_file = st.file_uploader("Choose a CSV file, row limit at 5000", type="csv")
 uploaded_file_confirm = False
 
 if uploaded_file is not None:

@@ -113,9 +113,10 @@ def filtering_dataframe(df: pd.DataFrame) -> pd.DataFrame:
         min_val = float(df_copied[each_col_to_filter].min())
         max_val = float(df_copied[each_col_to_filter].max())
         step = (max_val - min_val) / 100
-        user_numerical_input = right.slider(f"Values for: {each_col_to_filter}", min_value = min_val, max_value = max_val, step = step)
-        df_numerical_filter = df_copied[each_col_to_filter].between(*user_numerical_input)
+        user_numerical_input = right.slider(f"Values for: {each_col_to_filter}", min_value = min_val, max_value = max_val, step = step, value=(min_val, max_val))
+        df_numerical_filter = df_copied[each_col_to_filter].between(*user_numerical_input) # Fix this: Probably change to manual 2 low high filter.
         df_copied = df_copied[df_numerical_filter]
+        st.write(user_numerical_input)
 
       elif is_datetime64_any_dtype(df_copied[each_col_to_filter]):
         user_date_input = right.date_input(f"Values for {each_col_to_filter}", 
@@ -127,11 +128,13 @@ def filtering_dataframe(df: pd.DataFrame) -> pd.DataFrame:
           df_copied = df_copied[df_date_filter]
       # Next update text filter with and + or methods
       else:
-        and_filter_checkbox, or_filter_checkbox = st.columns([1,1])
+        and_filter_checkbox, or_filter_checkbox, semantic_filter_checkbox = st.columns([1,1,1])
         with and_filter_checkbox:
           select_and_filter = st.checkbox("Add Filters", key="select_and_filter")
         with or_filter_checkbox:
           select_or_filter = st.checkbox("Or Filters", key="select_or_filter")
+        with semantic_filter_checkbox:
+          sematic_filter = st.checkbox("Semantic Filters", key="select_semantic_filter")
 
         st.write('Filter substring in the following format: "word1", "word2", "word3" and select either filter by "And" or "Or".')
         user_text_input = right.text_input(f"Substring check {each_col_to_filter}",)
@@ -151,6 +154,7 @@ def filtering_dataframe(df: pd.DataFrame) -> pd.DataFrame:
                 combined_or_filter_list.append(list(df_text_filter))
               final_or_filter = func_or_filter_list(combined_or_filter_list)
               df_copied = df_copied[final_or_filter]
+              
           except KeyError:
             st.write(text_list_formated)
             st.write(KeyError)
