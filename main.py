@@ -57,7 +57,7 @@ uploaded_file_confirm = False
 if uploaded_file is not None:
     df_load_2_check_len = pd.read_csv(uploaded_file)
     loading_df_length = len(df_load_2_check_len)
-    if loading_df_length <= 1000:
+    if loading_df_length <= 5000:
         uploaded_file_confirm = True
     else:
         st.write("File has more rows than limit please reduce numbers of rows or use an alternative dataset.")
