@@ -128,13 +128,13 @@ def filtering_dataframe(df: pd.DataFrame) -> pd.DataFrame:
           df_copied = df_copied[df_date_filter]
       # Next update text filter with and + or methods
       else:
-        and_filter_checkbox, or_filter_checkbox, semantic_filter_checkbox = st.columns([1,1,1])
+        and_filter_checkbox, or_filter_checkbox = st.columns([1,1])
         with and_filter_checkbox:
           select_and_filter = st.checkbox("Add Filters", key="select_and_filter")
         with or_filter_checkbox:
           select_or_filter = st.checkbox("Or Filters", key="select_or_filter")
-        with semantic_filter_checkbox:
-          sematic_filter = st.checkbox("Semantic Filters", key="select_semantic_filter")
+        #with semantic_filter_checkbox: # This is an up comming feature
+          #sematic_filter = st.checkbox("Semantic Filters", key="select_semantic_filter")
 
         st.write('Filter substring in the following format: "word1", "word2", "word3" and select either filter by "And" or "Or".')
         user_text_input = right.text_input(f"Substring check {each_col_to_filter}",)
