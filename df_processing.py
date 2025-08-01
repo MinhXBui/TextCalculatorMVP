@@ -116,7 +116,7 @@ def filtering_dataframe(df: pd.DataFrame) -> pd.DataFrame:
         user_numerical_input = right.slider(f"Values for: {each_col_to_filter}", min_value = min_val, max_value = max_val, step = step, value=(min_val, max_val))
         df_numerical_filter = df_copied[each_col_to_filter].between(*user_numerical_input) # Fix this: Probably change to manual 2 low high filter.
         df_copied = df_copied[df_numerical_filter]
-        #st.write(user_numerical_input)
+        st.write(user_numerical_input)
 
       elif is_datetime64_any_dtype(df_copied[each_col_to_filter]):
         user_date_input = right.date_input(f"Values for {each_col_to_filter}", 
@@ -128,16 +128,16 @@ def filtering_dataframe(df: pd.DataFrame) -> pd.DataFrame:
           df_copied = df_copied[df_date_filter]
       # Next update text filter with and + or methods
       else:
-        and_filter_checkbox, or_filter_checkbox = st.columns([1,1])
+        and_filter_checkbox, or_filter_checkbox, semantic_filter_checkbox = st.columns([1,1,1])
         with and_filter_checkbox:
           select_and_filter = st.checkbox("Add Filters", key=f"select_and_filter_{each_col_to_filter}")
         with or_filter_checkbox:
           select_or_filter = st.checkbox("Or Filters", key=f"select_or_filter_{each_col_to_filter}")
-        #with semantic_filter_checkbox: # This is an up comming feature
-          #sematic_filter = st.checkbox("Semantic Filters", key="select_semantic_filter")
+        #with semantic_filter_checkbox:
+          #sematic_filter = st.checkbox("Semantic Filters", key=f"select_semantic_filter_{each_col_to_filter}")
 
         st.write('Filter substring in the following format: "word1", "word2", "word3" and select either filter by "And" or "Or".')
-        user_text_input = right.text_input(f"Substring check {each_col_to_filter}",)
+        user_text_input = right.text_input(f"Substring filter for: {each_col_to_filter}",)
         if user_text_input != "":
           text_list_formated = f"[{user_text_input}]"
           try:
