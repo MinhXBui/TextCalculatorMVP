@@ -116,7 +116,7 @@ def filtering_dataframe(df: pd.DataFrame) -> pd.DataFrame:
         user_numerical_input = right.slider(f"Values for: {each_col_to_filter}", min_value = min_val, max_value = max_val, step = step, value=(min_val, max_val))
         df_numerical_filter = df_copied[each_col_to_filter].between(*user_numerical_input) # Fix this: Probably change to manual 2 low high filter.
         df_copied = df_copied[df_numerical_filter]
-        st.write(user_numerical_input)
+        #st.write(user_numerical_input)
 
       elif is_datetime64_any_dtype(df_copied[each_col_to_filter]):
         user_date_input = right.date_input(f"Values for {each_col_to_filter}", 
@@ -130,9 +130,9 @@ def filtering_dataframe(df: pd.DataFrame) -> pd.DataFrame:
       else:
         and_filter_checkbox, or_filter_checkbox = st.columns([1,1])
         with and_filter_checkbox:
-          select_and_filter = st.checkbox("Add Filters", key="select_and_filter")
+          select_and_filter = st.checkbox("Add Filters", key=f"select_and_filter_{each_col_to_filter}")
         with or_filter_checkbox:
-          select_or_filter = st.checkbox("Or Filters", key="select_or_filter")
+          select_or_filter = st.checkbox("Or Filters", key=f"select_or_filter_{each_col_to_filter}")
         #with semantic_filter_checkbox: # This is an up comming feature
           #sematic_filter = st.checkbox("Semantic Filters", key="select_semantic_filter")
 
