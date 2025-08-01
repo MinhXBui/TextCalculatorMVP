@@ -50,13 +50,21 @@ st.divider()
 #streamlit_analytics.start_tracking()
 
 # --------- User Uploading files & previews data ---------
-st.subheader("Upload your CSV file here. Row limit at 5000")
-uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
-if len(uploaded_file) <= 1000:
-    st.write(f"The file size is too long for the prototype please upload a smaller file: {len(uploaded_file)}")
+st.subheader("Upload your CSV file here.")
+uploaded_file = st.file_uploader("Choose a CSV file, row limit at 5000.", type="csv")
+uploaded_file_confirm = False
 
-if uploaded_file is not None and len(uploaded_file) <= 1000:
-    orginal_df = pd.read_csv(uploaded_file)
+if uploaded_file is not None:
+    df_load_2_check_len = pd.read_csv(uploaded_file)
+    loading_df_length = len(df_load_2_check_len)
+    if loading_df_length <= 1000:
+        uploaded_file_confirm = True
+    else:
+        st.write("File has more rows than limit please reduce numbers of rows or use an alternative dataset.")
+        uploaded_file_confirm = False
+
+if uploaded_file is not None and uploaded_file_confirm == True:
+    orginal_df = df_load_2_check_len
     st.write("File successfully uploaded")
 
     st.divider()
