@@ -3,7 +3,7 @@ It's a pivot table, but for text data. That's about it, I guess. Cause after all
 To run it locally:
 1. pip install -r requirements.txt
 2. In the .streamlit folder, add secrets.toml and then add: GOOGLE_API_KEY="YourGeminiKey"
-3. Hit streamlit run main.py to see it on your browser
+3. Hit: "streamlit run main.py" to see it on your browser
 
 To adjust the API and file size limit:
 1. Filesize: .streamlit/config.toml --> maxUploadSize =  to filesize limit you want in MB
