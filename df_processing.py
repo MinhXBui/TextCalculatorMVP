@@ -116,7 +116,7 @@ def filtering_dataframe(df: pd.DataFrame) -> pd.DataFrame:
         user_numerical_input = right.slider(f"Values for: {each_col_to_filter}", min_value = min_val, max_value = max_val, step = step, value=(min_val, max_val))
         df_numerical_filter = df_copied[each_col_to_filter].between(*user_numerical_input) # Fix this: Probably change to manual 2 low high filter.
         df_copied = df_copied[df_numerical_filter]
-        st.write(user_numerical_input)
+        #st.write(user_numerical_input)
 
       elif is_datetime64_any_dtype(df_copied[each_col_to_filter]):
         user_date_input = right.date_input(f"Values for {each_col_to_filter}", 
