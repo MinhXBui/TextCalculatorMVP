@@ -1,5 +1,7 @@
 It's a pivot table, but for text data. That's about it, I guess. Cause after all: "The application capability is being limited by my creativity."
 
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+
 To run it locally:
 1. pip install -r requirements.txt
 2. In the .streamlit folder, add secrets.toml and then add: GOOGLE_API_KEY="YourGeminiKey"
@@ -11,14 +13,15 @@ To adjust the file rows limit and file size limit:
 
 You can also change it out for a more capable Gemini Model, but be careful of the cost if using Gemini 2.5 Pro.
 
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
 Here is a quick demo/tutorial by me on YouTube on how to use the software:
 [https://www.youtube.com/watch?v=iJKgxyn8RPU&embeds_referring_euri=http%3A%2F%2Flocalhost%3A8501%2F&source_ve_path=OTY3MTQ](https://www.youtube.com/watch?v=iJKgxyn8RPU&ab_channel=TextCalculator)
 
 Here is a published Streamlit app if you just want to test it out without cloning.
 https://textcalculator.streamlit.app/
-
 Check it out and let me know what you think. It would be really interesting to see an alternative application besides analyzing marketing survey open responses and customer reviews.
 
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
 Features roadmap priority:
 1. Text semantic filtering
 2. Multimodal pivoting capabilities for images
