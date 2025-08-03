@@ -19,4 +19,9 @@ https://textcalculator.streamlit.app/
 
 Check it out and let me know what you think. It would be really interesting to see an alternative application besides analyzing marketing survey open responses and customer reviews.
 
+Features roadmap priority:
+1. Text semantic filtering
+2. Multimodal pivoting capabilities for images
+
+
 
